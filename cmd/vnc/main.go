@@ -17,12 +17,12 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/suutaku/go-vnc/internal/auth"
-	"github.com/suutaku/go-vnc/internal/config"
 	"github.com/suutaku/go-vnc/internal/display"
 	"github.com/suutaku/go-vnc/internal/encodings"
 	"github.com/suutaku/go-vnc/internal/events"
 	"github.com/suutaku/go-vnc/internal/rfb"
 	"github.com/suutaku/go-vnc/internal/utils"
+	"github.com/suutaku/go-vnc/pkg/config"
 )
 
 var bindHost string

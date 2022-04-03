@@ -7,10 +7,10 @@ import (
 	"net"
 
 	"github.com/sirupsen/logrus"
-	"github.com/suutaku/go-vnc/internal/config"
 	"github.com/suutaku/go-vnc/internal/display"
 	"github.com/suutaku/go-vnc/internal/rfb"
 	"github.com/suutaku/go-vnc/internal/utils"
+	"github.com/suutaku/go-vnc/pkg/config"
 )
 
 type VNC struct {
