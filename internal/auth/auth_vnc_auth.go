@@ -16,7 +16,34 @@ type VNCAuth struct {
 // Code returns the code for vnc uth.
 func (a *VNCAuth) Code() uint8 { return 2 }
 
-// Negotiate immediately returns nil.
+// Response negotiate from client
+func (a *VNCAuth) Response(rw *buffer.ReadWriter) error {
+	challenge := make([]byte, 16)
+	if err := rw.Read(&challenge); err != nil {
+		return err
+	}
+	keyBytes := []byte{0, 0, 0, 0, 0, 0, 0, 0}
+	if len(a.Password) > 8 {
+		a.Password = a.Password[:8]
+	}
+	for i := 0; i < len(a.Password); i++ {
+		keyBytes[i] = a.reverseBits(a.Password[i])
+	}
+	block, err := des.NewCipher(keyBytes)
+	if err != nil {
+		return err
+	}
+	result1 := make([]byte, 8)
+	block.Encrypt(result1, challenge)
+	result2 := make([]byte, 8)
+	block.Encrypt(result2, challenge[8:])
+	crypted := append(result1, result2...)
+
+	rw.Dispatch(crypted)
+	return nil
+}
+
+// Negotiate auth from server
 func (a *VNCAuth) Negotiate(rw *buffer.ReadWriter) error {
 	key := a.Password
 	keyBytes := []byte{0, 0, 0, 0, 0, 0, 0, 0}
@@ -52,7 +79,7 @@ func (a *VNCAuth) Negotiate(rw *buffer.ReadWriter) error {
 	}
 
 	if string(res) != string(challenge) {
-		return errors.New("Password is invalid")
+		return errors.New("password is invalid")
 	}
 
 	return nil

@@ -32,6 +32,7 @@ func (s *ScreenCapture) Start(width, height int) error {
 	s.frameQueue = make(chan *image.RGBA, 2)
 	s.stopCh = make(chan struct{})
 	go func() {
+		logrus.Info("display [ScreenCapture] start")
 		ticker := time.NewTicker(time.Millisecond * 200) // 5 frames a second
 		for range ticker.C {
 			cont := true

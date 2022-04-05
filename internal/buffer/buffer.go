@@ -99,4 +99,6 @@ func (rw *ReadWriter) flush() error {
 }
 
 // Dispatch will push packed message(s) onto the buffer queue.
-func (rw *ReadWriter) Dispatch(msg []byte) { rw.wq <- msg }
+func (rw *ReadWriter) Dispatch(msg []byte) {
+	rw.wq <- msg
+}

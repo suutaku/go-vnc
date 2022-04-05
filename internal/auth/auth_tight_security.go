@@ -51,6 +51,11 @@ func (t *TightSecurity) Negotiate(rw *buffer.ReadWriter) error {
 	return t.negotiateTightAuth(rw)
 }
 
+// Response negotiate from client
+func (a *TightSecurity) Response(rw *buffer.ReadWriter) error {
+	return nil
+}
+
 // ExtendServerInit signals to the rfb server that we extend the ServerInit message.
 func (t *TightSecurity) ExtendServerInit(buf io.Writer) {
 	utils.Write(buf, uint16(len(TightServerMessages)))

@@ -3,6 +3,7 @@ package display
 import (
 	"image"
 
+	"github.com/sirupsen/logrus"
 	"github.com/suutaku/go-vnc/internal/buffer"
 	"github.com/suutaku/go-vnc/internal/encodings"
 	"github.com/suutaku/go-vnc/internal/types"
@@ -101,6 +102,7 @@ func (d *Display) GetEncodings() []int32 { return d.encodings }
 
 // SetEncodings sets the encodings that the connected client supports.
 func (d *Display) SetEncodings(encs []int32, pseudoEns []int32) {
+	logrus.Info("set encodings", encs)
 	d.encodings = encs
 	d.pseudoEncodings = pseudoEns
 	d.currentEnc = d.getEncodingsFunc(encs)

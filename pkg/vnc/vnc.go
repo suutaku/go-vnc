@@ -26,6 +26,7 @@ func NewVNC(ctx context.Context, conf config.Configure) *VNC {
 		EnabledAuthTypes: configureAuthTypes(conf.AuthType),
 		EnabledEncodings: configureEncodings(conf.EncodingType),
 		EnabledEvents:    configureEvents(conf.EventType),
+		ServerPassword:   conf.Password,
 	}
 
 	if authIsEnabled(opts.EnabledAuthTypes, "VNCAuth") {

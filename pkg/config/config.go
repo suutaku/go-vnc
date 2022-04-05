@@ -1,5 +1,7 @@
 package config
 
+import "github.com/suutaku/go-vnc/internal/display"
+
 // Debug represents if debug logging is enabled. It is mutated at boot.
 var Debug = false
 
@@ -28,4 +30,25 @@ type Configure struct {
 	AuthType     []string
 	EncodingType []string
 	EventType    []string
+	Password     string
+}
+
+var DefaultConfigure = Configure{
+	Debug: true,
+	TCP: TCPConf{
+		Host: "127.0.0.1",
+		Port: 2224,
+	},
+	Websockify: WebsockifyConf{
+		Port: 2225,
+		Host: "127.0.0.1",
+	},
+	Resolution: ResolutionConf{
+		Width:  2880,
+		Height: 1800,
+	},
+	DisplayImpl:  display.ProviderScreenCapture,
+	AuthType:     []string{"VNCAuth", "None", "TightSecurity"},
+	EncodingType: []string{"TightPNGEncoding", "RawEncoding", "TightEncoding"},
+	EventType:    []string{"KeyEvent", "PointerEvent", "FrameBufferUpdate", "SetPixelFormat", "SetEncodings", "ClientCutText"},
 }

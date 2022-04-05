@@ -14,7 +14,7 @@ import (
 )
 
 func (c *Conn) doHandshake() error {
-
+	logrus.Printf("%#v", c.buf)
 	ver, err := version.NegotiateProtocolVersion(c.buf)
 	if err != nil {
 		return err
@@ -37,6 +37,7 @@ func (c *Conn) doHandshake() error {
 
 	// 6.3.2. ServerInit
 	width, height := c.display.GetDimensions()
+	logrus.Debug("W/H", width, height)
 	buf := new(bytes.Buffer)
 	utils.Write(buf, uint16(width))
 	utils.Write(buf, uint16(height))
@@ -52,7 +53,6 @@ func (c *Conn) doHandshake() error {
 	if extender, ok := authType.(interface{ ExtendServerInit(io.Writer) }); ok {
 		extender.ExtendServerInit(buf)
 	}
-
 	c.buf.Dispatch(buf.Bytes())
 	return nil
 }

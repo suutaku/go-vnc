@@ -48,14 +48,13 @@ func (d *Display) pushImage(img *image.RGBA) {
 	}
 
 	enc := d.GetCurrentEncoding()
-
 	// Send that rectangle:
 	utils.PackStruct(buf, &types.FrameBufferRectangle{
 		X: uint16(b.Min.X), Y: uint16(b.Min.Y), Width: uint16(b.Max.X - b.Min.X), Height: uint16(b.Max.Y - b.Min.Y), EncType: enc.Code(), // TODO make sure supported
 	})
 
 	enc.HandleBuffer(buf, d.GetPixelFormat(), img)
-
+	logrus.Info("frame size: ", len(buf.Bytes()))
 	d.buf.Dispatch(buf.Bytes())
 }
 

@@ -86,12 +86,13 @@ func (s *Server) Serve(ln net.Listener) error {
 		conn := s.newConn(c)
 
 		// Do the rfb handshake
+		logrus.Debug("start handleshake")
 		if err := conn.doHandshake(); err != nil {
 			logrus.Error("Error during server-client handshake: ", err.Error())
 			conn.c.Close()
 			continue
 		}
-
+		logrus.Debug("handleshake OK!")
 		// handle events
 		go conn.serve()
 	}

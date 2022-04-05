@@ -20,6 +20,7 @@ func NegotiateProtocolVersion(buf *buffer.ReadWriter) (string, error) {
 
 	sl, err := buf.Reader().ReadSlice('\n')
 	if err != nil {
+		logrus.Debug("reading client protocol version: %v", err)
 		return "", fmt.Errorf("reading client protocol version: %v", err)
 	}
 	ver := string(sl)
@@ -28,6 +29,20 @@ func NegotiateProtocolVersion(buf *buffer.ReadWriter) (string, error) {
 	case V7, V8: // cool.
 	default:
 		return "", fmt.Errorf("unsupported client-requested version %q", ver)
+	}
+	return ver, nil
+}
+
+func ResponseProtocolVersion(buf *buffer.ReadWriter) (string, error) {
+	sl, err := buf.Reader().ReadSlice('\n')
+	if err != nil {
+		return "", err
+	}
+	ver := string(sl)
+	switch ver {
+	case V7, V8: // nice
+	default:
+		return "", fmt.Errorf("unsupported server-requested version %q", ver)
 	}
 	return ver, nil
 }
