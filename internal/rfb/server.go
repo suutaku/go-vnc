@@ -87,6 +87,7 @@ func (s *Server) Serve(ln net.Listener) error {
 		logrus.Info("New client connection from ", c.RemoteAddr().String())
 
 		// Create a new client connection
+
 		conn := s.newConn(c)
 
 		// Do the rfb handshake
@@ -106,7 +107,7 @@ func (s *Server) Serve(ln net.Listener) error {
 func (s *Server) ServeWebsockify(ln net.Listener) error {
 	srvr := &http.Server{
 		Addr:        ln.Addr().String(),
-		ReadTimeout: time.Second * 300, WriteTimeout: time.Second * 300,
+		ReadTimeout: time.Second * 5, WriteTimeout: time.Second * 5,
 		Handler: &websocket.Server{
 			Handshake: func(cfg *websocket.Config, r *http.Request) error { return nil },
 			Handler: func(wsconn *websocket.Conn) {

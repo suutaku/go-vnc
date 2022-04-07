@@ -115,13 +115,27 @@ func (d *Display) GetCurrentEncoding() encodings.Encoding { return d.currentEnc 
 func (d *Display) GetLastImage() *image.RGBA { return d.displayProvider.PullFrame() }
 
 // DispatchFrameBufferUpdate dispatches a FrameBufferUpdateRequest on the request queue.
-func (d *Display) DispatchFrameBufferUpdate(req *types.FrameBufferUpdateRequest) { d.fbReqQueue <- req }
+func (d *Display) DispatchFrameBufferUpdate(req *types.FrameBufferUpdateRequest) {
+	select {
+	case d.fbReqQueue <- req:
+	default:
+		logrus.Debug("framebuffer request event channel full")
+		<-d.fbReqQueue
+	}
+}
 
 // DispatchKeyEvent dispatches a key event to the queue.
 func (d *Display) DispatchKeyEvent(ev *types.KeyEvent) { d.keyEvQueue <- ev }
 
 // DispatchPointerEvent dispatches a pointer event to the queue.
-func (d *Display) DispatchPointerEvent(ev *types.PointerEvent) { d.ptrEvQueue <- ev }
+func (d *Display) DispatchPointerEvent(ev *types.PointerEvent) {
+	select {
+	case d.ptrEvQueue <- ev:
+	default:
+		logrus.Debug("point event channel full")
+		<-d.ptrEvQueue
+	}
+}
 
 // DispatchClientCutText dispatches a ClientCutText to the queue.
 func (d *Display) DispatchClientCutText(ev *types.ClientCutText) { d.cutTxtEvsQ <- ev }

@@ -73,6 +73,9 @@ func (d *Display) handleFrameBufferEvents() {
 		case <-ticker.C:
 			logrus.Debug("Pushing latest frame to client")
 			last := d.GetLastImage()
+			if last == nil {
+				continue
+			}
 			d.pushImage(last)
 		}
 	}

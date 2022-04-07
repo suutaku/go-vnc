@@ -2,7 +2,6 @@ package display
 
 import (
 	"github.com/go-vgo/robotgo"
-	"github.com/sirupsen/logrus"
 	"github.com/suutaku/go-vnc/internal/types"
 )
 
@@ -11,8 +10,7 @@ func (d *Display) servePointerEvent(ev *types.PointerEvent) {
 	for mask, maskType := range btnMasks {
 		btns[maskType] = nthBitOf(ev.ButtonMask, mask) == 1
 	}
-	// This is just a mouse move event
-	logrus.Printf("%#v\n", ev)
+
 	for k, v := range btns {
 		switch k {
 		case "left", "middle", "right", "scroll-up", "scroll-down", "scroll-left", "scroll-right":
