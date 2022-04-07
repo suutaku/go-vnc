@@ -8,6 +8,7 @@ import (
 
 	"golang.org/x/net/websocket"
 
+	"github.com/go-vgo/robotgo"
 	"github.com/sirupsen/logrus"
 	"github.com/suutaku/go-vnc/internal/auth"
 	"github.com/suutaku/go-vnc/internal/display"
@@ -27,6 +28,9 @@ type ServerOpts struct {
 
 // NewServer creates a new RFB server with an initial width and height.
 func NewServer(opts *ServerOpts) *Server {
+	if opts.Width <= 0 || opts.Height <= 0 {
+		opts.Width, opts.Height = robotgo.GetScreenSize()
+	}
 	server := &Server{
 		displayProvider:  opts.DisplayProvider,
 		width:            opts.Width,
@@ -106,7 +110,6 @@ func (s *Server) ServeWebsockify(ln net.Listener) error {
 		Handler: &websocket.Server{
 			Handshake: func(cfg *websocket.Config, r *http.Request) error { return nil },
 			Handler: func(wsconn *websocket.Conn) {
-				logrus.Info("New websocket client connection from ", wsconn.Request().RemoteAddr)
 				wsconn.PayloadType = websocket.BinaryFrame
 				// Create a new client connection
 				conn := s.newConn(wsconn)

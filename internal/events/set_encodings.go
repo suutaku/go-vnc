@@ -18,20 +18,17 @@ func (s *SetEncodings) Handle(buf *buffer.ReadWriter, d *display.Display) error 
 		return err
 	}
 
-	logrus.Info("read encoding padding ok")
-
 	var numEncodings uint16
 	if err := buf.Read(&numEncodings); err != nil {
 		return err
 	}
-	logrus.Info("read encoding number ", numEncodings)
+
 	encTypes := make([]int32, int(numEncodings))
 	for i := 0; i < int(numEncodings); i++ {
 		if err := buf.Read(&encTypes[i]); err != nil {
 			return err
 		}
 	}
-	logrus.Printf("read encoding type ok: %#v\n", encTypes)
 	encs, pseudo := splitPseudoEncodings(encTypes)
 	logrus.Infof("Client encodings: %#v", encs)
 	logrus.Infof("Client pseudo-encodings: %#v", pseudo)

@@ -14,7 +14,6 @@ import (
 )
 
 func (c *Conn) doHandshake() error {
-	logrus.Printf("%#v", c.buf)
 	ver, err := version.NegotiateProtocolVersion(c.buf)
 	if err != nil {
 		return err

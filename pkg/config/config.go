@@ -35,10 +35,6 @@ type Configure struct {
 
 var DefaultConfigure = Configure{
 	Debug: true,
-	TCP: TCPConf{
-		Host: "127.0.0.1",
-		Port: 2224,
-	},
 	Websockify: WebsockifyConf{
 		Port: 2225,
 		Host: "127.0.0.1",
@@ -48,7 +44,7 @@ var DefaultConfigure = Configure{
 		Height: 1800,
 	},
 	DisplayImpl:  display.ProviderScreenCapture,
-	AuthType:     []string{"VNCAuth", "None", "TightSecurity"},
+	AuthType:     []string{"VNCAuth", "TightSecurity"}, // None, VNCAuth, TightSecurity
 	EncodingType: []string{"TightPNGEncoding", "RawEncoding", "TightEncoding"},
 	EventType:    []string{"KeyEvent", "PointerEvent", "FrameBufferUpdate", "SetPixelFormat", "SetEncodings", "ClientCutText"},
 }

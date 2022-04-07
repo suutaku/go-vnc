@@ -25,8 +25,6 @@ func (d *Display) pushFrame(ur *types.FrameBufferUpdateRequest) {
 	if ur.Incremental() {
 		li = truncateImage(ur, li)
 	}
-
-	logrus.Debug("Pushing latest frame to client")
 	d.pushImage(li)
 }
 
@@ -54,7 +52,6 @@ func (d *Display) pushImage(img *image.RGBA) {
 	})
 
 	enc.HandleBuffer(buf, d.GetPixelFormat(), img)
-	logrus.Info("frame size: ", len(buf.Bytes()))
 	d.buf.Dispatch(buf.Bytes())
 }
 

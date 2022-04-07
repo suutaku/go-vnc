@@ -7,36 +7,53 @@ import (
 )
 
 func (d *Display) handleKeyEvents() {
-	for {
-		select {
-		case ev, ok := <-d.keyEvQueue:
-			if !ok {
-				// Client disconnected.
-				return
-			}
-			logrus.Debug("Got key event: ", ev)
-			if ev.IsDown() {
-				d.appendDownKeyIfMissing(ev.Key)
-				d.dispatchDownKeys()
-			} else {
-				d.removeDownKey(ev.Key)
-			}
+
+	for ev := range d.keyEvQueue {
+		logrus.Debug("Got key event: ", ev)
+		if ev.IsDown() {
+			d.appendDownKeyIfMissing(ev.Key)
+			d.dispatchDownKeys()
+		} else {
+			d.removeDownKey(ev.Key)
 		}
 	}
+
+	// for {
+	// 	select {
+	// 	case ev, ok := <-d.keyEvQueue:
+	// 		if !ok {
+	// 			// Client disconnected.
+	// 			return
+	// 		}
+	// 		logrus.Debug("Got key event: ", ev)
+	// 		if ev.IsDown() {
+	// 			d.appendDownKeyIfMissing(ev.Key)
+	// 			d.dispatchDownKeys()
+	// 		} else {
+	// 			d.removeDownKey(ev.Key)
+	// 		}
+	// 	}
+	// }
 }
 
 func (d *Display) handlePointerEvents() {
-	for {
-		select {
-		case ev, ok := <-d.ptrEvQueue:
-			if !ok {
-				// Client disconnected.
-				return
-			}
-			logrus.Debug("Got pointer event: ", ev)
-			d.servePointerEvent(ev)
-		}
+
+	for ev := range d.ptrEvQueue {
+		logrus.Debug("Got pointer event: ", ev)
+		d.servePointerEvent(ev)
 	}
+
+	// for {
+	// 	select {
+	// 	case ev, ok := <-d.ptrEvQueue:
+	// 		if !ok {
+	// 			// Client disconnected.
+	// 			return
+	// 		}
+	// 		logrus.Debug("Got pointer event: ", ev)
+	// 		d.servePointerEvent(ev)
+	// 	}
+	// }
 }
 
 func (d *Display) handleFrameBufferEvents() {
@@ -62,17 +79,23 @@ func (d *Display) handleFrameBufferEvents() {
 }
 
 func (d *Display) handleCutTextEvents() {
-	for {
-		select {
-		case ev, ok := <-d.cutTxtEvsQ:
-			if !ok {
-				// Client disconnected.
-				return
-			}
-			logrus.Debug("Got cut-text event: ", ev)
-			d.syncToClipboard(ev)
-		}
+
+	for ev := range d.cutTxtEvsQ {
+		logrus.Debug("Got cut-text event: ", ev)
+		d.syncToClipboard(ev)
 	}
+
+	// for {
+	// 	select {
+	// 	case ev, ok := <-d.cutTxtEvsQ:
+	// 		if !ok {
+	// 			// Client disconnected.
+	// 			return
+	// 		}
+	// 		logrus.Debug("Got cut-text event: ", ev)
+	// 		d.syncToClipboard(ev)
+	// 	}
+	// }
 }
 
 func (d *Display) watchChannels() {

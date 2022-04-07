@@ -15,7 +15,6 @@ const (
 
 // NegotiateProtocolVersion will negotiate the protocol version with the given connection.
 func NegotiateProtocolVersion(buf *buffer.ReadWriter) (string, error) {
-	logrus.Infof("Sending version: %q", V8)
 	buf.Dispatch([]byte(V8))
 
 	sl, err := buf.Reader().ReadSlice('\n')

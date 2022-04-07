@@ -1,14 +1,12 @@
 package display
 
 import (
-	"bytes"
 	"image"
 	"time"
 
 	"github.com/go-vgo/robotgo"
 	"github.com/nfnt/resize"
 	"github.com/sirupsen/logrus"
-	"golang.org/x/image/bmp"
 )
 
 // ScreenCapture implements a display provider that periodically captures the screen
@@ -41,16 +39,7 @@ func (s *ScreenCapture) Start(width, height int) error {
 				bitMap := robotgo.CaptureScreen()
 				defer robotgo.FreeBitmap(bitMap)
 
-				bs := robotgo.ToBitmapBytes(bitMap)
-
-				var img image.Image
-
-				img, err := bmp.Decode(bytes.NewReader(bs))
-				if err != nil {
-					logrus.Error("Unable to decode bitmap: ", err.Error())
-					return
-				}
-
+				img := robotgo.ToImage(bitMap)
 				b := img.Bounds()
 				if b.Max.X > width || b.Max.Y > height {
 					img = resize.Resize(uint(width), uint(height), img, resize.Lanczos3)
@@ -73,9 +62,10 @@ func (s *ScreenCapture) Start(width, height int) error {
 					// pop the oldest item off the queue
 					// and let the next sample try to get in
 					logrus.Debug("Client is behind on frames, forcing oldest one off the queue")
-					select {
-					case <-s.frameQueue:
-					}
+					// select {
+					// case <-s.frameQueue:
+					// }
+					<-s.frameQueue
 				}
 
 			}()

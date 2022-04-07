@@ -2,6 +2,7 @@ package display
 
 import (
 	"github.com/go-vgo/robotgo"
+	"github.com/sirupsen/logrus"
 	"github.com/suutaku/go-vnc/internal/types"
 )
 
@@ -11,7 +12,19 @@ func (d *Display) servePointerEvent(ev *types.PointerEvent) {
 		btns[maskType] = nthBitOf(ev.ButtonMask, mask) == 1
 	}
 	// This is just a mouse move event
-	robotgo.MoveMouse(int(ev.X), int(ev.Y))
+	logrus.Printf("%#v\n", ev)
+	for k, v := range btns {
+		switch k {
+		case "left", "middle", "right", "scroll-up", "scroll-down", "scroll-left", "scroll-right":
+			if v {
+				robotgo.MouseDown(robotGoKeyNames[k])
+			} else {
+				robotgo.MouseUp(robotGoKeyNames[k])
+			}
+		case "unhandled":
+		}
+	}
+	robotgo.Move(int(ev.X), int(ev.Y))
 }
 
 var btnMasks = map[int]string{
@@ -23,6 +36,17 @@ var btnMasks = map[int]string{
 	5: "scroll-left",
 	6: "scroll-right",
 	7: "unhandled",
+}
+
+var robotGoKeyNames = map[string]string{
+	"left":         "left",
+	"middle":       "center",
+	"right":        "right",
+	"scroll-up":    "wheelUp",
+	"scroll-down":  "wheelDown",
+	"scroll-left":  "wheelLeft",
+	"scroll-right": "wheelRight",
+	"unhandled":    "unhandled",
 }
 
 func nthBitOf(bit uint8, n int) uint8 {

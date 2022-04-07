@@ -2,6 +2,7 @@ package rfb
 
 import (
 	"net"
+	"time"
 
 	"github.com/sirupsen/logrus"
 	"github.com/suutaku/go-vnc/internal/buffer"
@@ -49,6 +50,12 @@ func (c *Conn) serve() {
 
 	// handle events
 	for {
+		err := c.c.SetReadDeadline(time.Now().Add(3 * time.Second))
+		if err != nil {
+			logrus.Error("SetReadDeadline failed:", err)
+			// do something else, for example create new conn
+			return
+		}
 		cmd, err := c.buf.ReadByte()
 		if err != nil {
 			logrus.Errorf("Client disconnect: %s", err.Error())
