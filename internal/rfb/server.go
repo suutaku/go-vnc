@@ -60,6 +60,13 @@ func NewServer(opts *ServerOpts) *Server {
 		// TODO: Configure capabilities
 	}
 
+	// Configure VNCAuth if enabled
+	if server.VNCAuthIsEnabled() {
+		iface := server.GetAuthByName("VNCAuth")
+		vncAuth := iface.(*auth.VNCAuth)
+		vncAuth.Password = server.serverPassword
+	}
+
 	return server
 }
 
