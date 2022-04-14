@@ -3,7 +3,6 @@ package vnc
 import (
 	"context"
 	"fmt"
-	"io/ioutil"
 	"net"
 
 	"github.com/sirupsen/logrus"
@@ -30,13 +29,7 @@ func NewVNC(ctx context.Context, conf config.Configure) *VNC {
 	}
 
 	if authIsEnabled(opts.EnabledAuthTypes, "VNCAuth") {
-		if conf.AuthFilePath != "" {
-			passw, err := ioutil.ReadFile(conf.AuthFilePath)
-			if err != nil {
-				panic(err)
-			}
-			opts.ServerPassword = string(passw)
-		} else {
+		if opts.ServerPassword == "" {
 			logrus.Info("VNCAuth is enabled and no password provided, generating a server password")
 			opts.ServerPassword = utils.RandomString(8)
 			logrus.Info("Clients using VNCAuth can connect with the following password: ", opts.ServerPassword)

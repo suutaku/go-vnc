@@ -1,6 +1,9 @@
 package config
 
-import "github.com/suutaku/go-vnc/internal/display"
+import (
+	"github.com/suutaku/go-vnc/internal/display"
+	"github.com/suutaku/go-vnc/internal/utils"
+)
 
 // Debug represents if debug logging is enabled. It is mutated at boot.
 var Debug = false
@@ -39,10 +42,7 @@ var DefaultConfigure = Configure{
 		Port: 2225,
 		Host: "127.0.0.1",
 	},
-	Resolution: ResolutionConf{
-		Width:  2880,
-		Height: 1800,
-	},
+	Password:     utils.RandomString(8),
 	DisplayImpl:  display.ProviderScreenCapture,
 	AuthType:     []string{"VNCAuth", "TightSecurity"}, // None, VNCAuth, TightSecurity
 	EncodingType: []string{"TightPNGEncoding", "RawEncoding", "TightEncoding"},
