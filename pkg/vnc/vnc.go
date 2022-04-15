@@ -83,6 +83,6 @@ func (vnc *VNC) serveWebsockify() {
 
 func (vnc *VNC) Close() {
 	if vnc.server != nil {
-		vnc.listener.Close()
+		(*vnc.listener).Close()
 	}
 }
