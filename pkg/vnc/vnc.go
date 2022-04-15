@@ -13,8 +13,9 @@ import (
 )
 
 type VNC struct {
-	conf   config.Configure
-	server *rfb.Server
+	conf     config.Configure
+	server   *rfb.Server
+	listener *net.Listener
 }
 
 func NewVNC(ctx context.Context, conf config.Configure) *VNC {
@@ -75,6 +76,13 @@ func (vnc *VNC) serveWebsockify() {
 	if err != nil {
 		panic(err)
 	}
+	vnc.listener = &l
 	logrus.Info("listening for websockify connections on ", wsAddr)
 	vnc.server.ServeWebsockify(l)
+}
+
+func (vnc *VNC) Close() {
+	if vnc.server != nil {
+		vnc.listener.Close()
+	}
 }
