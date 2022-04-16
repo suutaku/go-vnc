@@ -56,7 +56,7 @@ func (vnc *VNC) Start() {
 		panic("no listen service! please enable TCP or WS")
 	}
 	if !noWebsockify {
-		go vnc.serveWebsockify()
+		vnc.serveWebsockify()
 	}
 	if !noTCP {
 		// Create a listener
@@ -78,7 +78,7 @@ func (vnc *VNC) serveWebsockify() {
 	}
 	vnc.listener = &l
 	logrus.Info("listening for websockify connections on ", wsAddr)
-	vnc.server.ServeWebsockify(l)
+	go vnc.server.ServeWebsockify(l)
 }
 
 func (vnc *VNC) Close() {
