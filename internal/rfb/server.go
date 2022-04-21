@@ -121,20 +121,19 @@ func (s *Server) ServeWebsockify(ln net.Listener) error {
 				wsconn.PayloadType = websocket.BinaryFrame
 				// Create a new client connection
 				conn := s.newConn(wsconn)
-
 				// Do the rfb handshake
 				if err := conn.doHandshake(); err != nil {
 					logrus.Error("Error during server-client handshake: ", err.Error())
 					conn.c.Close()
 					return
 				}
-
 				// handle events
 				conn.serve()
 			},
 		},
 	}
-	return srvr.Serve(ln)
+	srvr.Serve(ln)
+	return nil
 }
 
 // AuthIsSupported returns true if the given auth type is supported.

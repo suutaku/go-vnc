@@ -16,7 +16,7 @@ const (
 // NegotiateProtocolVersion will negotiate the protocol version with the given connection.
 func NegotiateProtocolVersion(buf *buffer.ReadWriter) (string, error) {
 	buf.Dispatch([]byte(V8))
-
+	logrus.Debug("do handshke dispatch version done")
 	sl, err := buf.Reader().ReadSlice('\n')
 	if err != nil {
 		logrus.Debug("reading client protocol version: %v", err)

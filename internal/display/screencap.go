@@ -31,47 +31,45 @@ func (s *ScreenCapture) Start(width, height int) error {
 	s.stopCh = make(chan struct{})
 	go func() {
 		logrus.Info("display [ScreenCapture] start")
-		ticker := time.NewTicker(time.Millisecond * 200) // 5 frames a second
-		for range ticker.C {
-			cont := true
+		// max speed
+		for {
+			start := time.Now()
+			bitMap := robotgo.CaptureScreen()
+			defer robotgo.FreeBitmap(bitMap)
+			elapsed := time.Since(start)
+			logrus.Debugf("Binomial took 1 %s", elapsed)
 
-			func() {
-				bitMap := robotgo.CaptureScreen()
-				defer robotgo.FreeBitmap(bitMap)
+			img := robotgo.ToImage(bitMap)
+			elapsed2 := time.Since(start)
+			logrus.Debugf("Binomial took 2 %s", elapsed2-elapsed)
+			b := img.Bounds()
+			if b.Max.X > width || b.Max.Y > height {
+				img = resize.Resize(uint(width), uint(height), img, resize.Lanczos2)
+			}
+			elapsed3 := time.Since(start)
+			logrus.Debugf("Binomial took 3 %s", elapsed3-elapsed2)
+			// if the image was resized this will be done already, otherwise, convert
+			// to RGBA
+			if _, ok := img.(*image.RGBA); !ok {
+				img = convertToRGBA(img.(*image.NRGBA))
+			}
+			elapsed4 := time.Since(start)
+			logrus.Debugf("Binomial took 4 %s", elapsed4-elapsed3)
 
-				img := robotgo.ToImage(bitMap)
-				b := img.Bounds()
-				if b.Max.X > width || b.Max.Y > height {
-					img = resize.Resize(uint(width), uint(height), img, resize.Lanczos3)
-				}
-
-				// if the image was resized this will be done already, otherwise, convert
-				// to RGBA
-				if _, ok := img.(*image.RGBA); !ok {
-					img = convertToRGBA(img.(*image.NRGBA))
-				}
-
-				logrus.Debug("Queueing frame for processing")
-				// Queue the image for processing
-				select {
-				case <-s.stopCh:
-					logrus.Debug("Received event on stop channel, stopping screen capture")
-					cont = false
-				case s.frameQueue <- img.(*image.RGBA):
-				default:
-					// pop the oldest item off the queue
-					// and let the next sample try to get in
-					logrus.Debug("Client is behind on frames, forcing oldest one off the queue")
-					// select {
-					// case <-s.frameQueue:
-					// }
-					<-s.frameQueue
-				}
-
-			}()
-
-			if !cont {
+			logrus.Debug("Queueing frame for processing")
+			select {
+			case <-s.stopCh:
+				logrus.Debug("Received event on stop channel, stopping screen capture")
 				return
+			case s.frameQueue <- img.(*image.RGBA):
+			default:
+				// pop the oldest item off the queue
+				// and let the next sample try to get in
+				logrus.Debug("Client is behind on frames, forcing oldest one off the queue")
+				// select {
+				// case <-s.frameQueue:
+				// }
+				<-s.frameQueue
 			}
 		}
 	}()

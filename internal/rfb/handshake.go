@@ -14,6 +14,7 @@ import (
 )
 
 func (c *Conn) doHandshake() error {
+	logrus.Debug("do handle shake")
 	ver, err := version.NegotiateProtocolVersion(c.buf)
 	if err != nil {
 		return err

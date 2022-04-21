@@ -78,7 +78,7 @@ func (vnc *VNC) serveWebsockify() {
 	}
 	vnc.listener = &l
 	logrus.Info("listening for websockify connections on ", wsAddr)
-	go vnc.server.ServeWebsockify(l)
+	vnc.server.ServeWebsockify(l)
 }
 
 func (vnc *VNC) Close() {
