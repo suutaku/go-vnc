@@ -2,6 +2,8 @@ package display
 
 import (
 	"image"
+
+	"github.com/sirupsen/logrus"
 )
 
 // A Display is an interface that can be implemented by different types of frame sources.
@@ -30,8 +32,8 @@ const (
 func GetDisplayProvider(p Provider) IDisplay {
 	switch p {
 	case ProviderGstreamer:
-		//logrus.Warn("gstreamer impl was removed")
-		return &Gstreamer{}
+		logrus.Warn("gstreamer impl was removed")
+		// return &Gstreamer{}
 		return nil
 	case ProviderScreenCapture:
 		return &ScreenCapture{}

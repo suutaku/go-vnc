@@ -43,7 +43,7 @@ var DefaultConfigure = Configure{
 		Host: "127.0.0.1",
 	},
 	Password:     utils.RandomString(8),
-	DisplayImpl:  display.ProviderGstreamer,
+	DisplayImpl:  display.ProviderScreenCapture,
 	AuthType:     []string{"VNCAuth", "TightSecurity"}, // None, VNCAuth, TightSecurity
 	EncodingType: []string{"TightPNGEncoding", "RawEncoding", "TightEncoding"},
 	EventType:    []string{"KeyEvent", "PointerEvent", "FrameBufferUpdate", "SetPixelFormat", "SetEncodings", "ClientCutText"},
