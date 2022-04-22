@@ -1,17 +1,17 @@
 package display
 
 import (
-	"fmt"
 	"image"
 
-	"github.com/kbinani/screenshot"
 	"github.com/sirupsen/logrus"
+	"github.com/suutaku/screenshot/pkg/screenshot"
 	"golang.org/x/image/draw"
 )
 
 type ScreenShot struct {
-	frameQueue chan *image.RGBA
-	stopCh     chan struct{}
+	frameQueue   chan *image.RGBA
+	stopCh       chan struct{}
+	screenshoter *screenshot.Screenshot
 }
 
 func NewScreenShot() *ScreenShot {
@@ -20,25 +20,22 @@ func NewScreenShot() *ScreenShot {
 
 // Start should take care of any requirements for starting a feed to the frame buffer.
 func (ss *ScreenShot) Start(width, height int) error {
-	n := screenshot.NumActiveDisplays()
-	if n < 1 {
-		return fmt.Errorf("no display found")
-	}
+
+	ss.screenshoter = screenshot.NewScreenshot(0, 0, 0, 0)
 	ss.frameQueue = make(chan *image.RGBA, 2)
 	ss.stopCh = make(chan struct{})
+	dr := image.Rect(0, 0, width, height)
+	newImg := image.NewRGBA(dr)
 	go func() {
 		logrus.Info("display [ScreenShot] start")
-		bounds := screenshot.GetDisplayBounds(0)
-		dr := image.Rect(0, 0, width, height)
-		newImg := image.NewRGBA(dr)
 		for {
-			img, err := screenshot.CaptureRect(bounds)
+			img, err := ss.screenshoter.Capture()
 			if err != nil {
 				logrus.Error(err)
 				ss.Close()
 				return
 			}
-			if bounds.Max.X > width || bounds.Max.Y > height {
+			if img.Bounds().Max.X > width || img.Bounds().Max.Y > height {
 				draw.BiLinear.Scale(newImg, dr, img, img.Bounds(), draw.Over, nil)
 				img = newImg
 			}
@@ -69,5 +66,8 @@ func (ss *ScreenShot) PullFrame() *image.RGBA {
 // Close should stop any background processes from running.
 func (ss *ScreenShot) Close() error {
 	ss.stopCh <- struct{}{}
+	if ss.screenshoter != nil {
+		ss.screenshoter.Close()
+	}
 	return nil
 }
