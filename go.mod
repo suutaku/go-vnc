@@ -7,7 +7,7 @@ require (
 	github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646
 	github.com/sirupsen/logrus v1.8.1
 	github.com/spf13/cobra v1.4.0
-	github.com/suutaku/screenshot v0.0.0-20220422112035-7d94967790c0
+	github.com/suutaku/screenshot v0.0.0-20220422154633-c49e77dbf1a9
 	golang.org/x/image v0.0.0-20220321031419-a8550c1d254a
 	golang.org/x/net v0.0.0-20220401154927-543a649e0bdd
 )

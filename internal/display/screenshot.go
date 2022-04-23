@@ -36,7 +36,7 @@ func (ss *ScreenShot) Start(width, height int) error {
 				return
 			}
 			if img.Bounds().Max.X > width || img.Bounds().Max.Y > height {
-				draw.BiLinear.Scale(newImg, dr, img, img.Bounds(), draw.Over, nil)
+				draw.CatmullRom.Scale(newImg, dr, img, img.Bounds(), draw.Over, nil)
 				img = newImg
 			}
 			select {
