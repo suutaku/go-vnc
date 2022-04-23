@@ -26,6 +26,7 @@ type Provider string
 const (
 	ProviderGstreamer     = "gstreamer"
 	ProviderScreenCapture = "screencap"
+	ProviderScreenShot    = "screenshot"
 )
 
 // GetDisplayProvider returns the provider to use for the given RFB connection.
@@ -37,6 +38,9 @@ func GetDisplayProvider(p Provider) IDisplay {
 		return nil
 	case ProviderScreenCapture:
 		return &ScreenCapture{}
+	case ProviderScreenShot:
+		logrus.Info("screen shot provider")
+		return &ScreenShot{}
 	}
 	return nil
 }
