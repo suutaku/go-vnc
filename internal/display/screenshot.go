@@ -48,9 +48,6 @@ func (ss *ScreenShot) Start(width, height int) error {
 				// pop the oldest item off the queue
 				// and let the next sample try to get in
 				logrus.Debug("Client is behind on frames, forcing oldest one off the queue")
-				// select {
-				// case <-s.frameQueue:
-				// }
 				<-ss.frameQueue
 			}
 		}
