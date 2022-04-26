@@ -6,23 +6,28 @@ import (
 )
 
 func (d *Display) servePointerEvent(ev *types.PointerEvent) {
+	robotgo.Move(int(ev.X), int(ev.Y))
 	btns := make(map[string]bool)
 	for mask, maskType := range btnMasks {
 		btns[maskType] = nthBitOf(ev.ButtonMask, mask) == 1
-	}
-
-	for k, v := range btns {
-		switch k {
-		case "left", "middle", "right", "scroll-up", "scroll-down", "scroll-left", "scroll-right":
-			if v {
-				robotgo.MouseDown(robotGoKeyNames[k])
-			} else {
-				robotgo.MouseUp(robotGoKeyNames[k])
-			}
-		case "unhandled":
+		if btns[maskType] {
+			robotgo.MouseDown(robotGoKeyNames[maskType])
+		} else {
+			robotgo.MouseUp(robotGoKeyNames[maskType])
 		}
 	}
-	robotgo.Move(int(ev.X), int(ev.Y))
+
+	// for k, v := range btns {
+	// 	switch k {
+	// 	case "left", "middle", "right", "scroll-up", "scroll-down", "scroll-left", "scroll-right":
+	// 		if v {
+	// 			robotgo.MouseDown(robotGoKeyNames[k])
+	// 		} else {
+	// 			robotgo.MouseUp(robotGoKeyNames[k])
+	// 		}
+	// 	case "unhandled":
+	// 	}
+	// }
 }
 
 var btnMasks = map[int]string{

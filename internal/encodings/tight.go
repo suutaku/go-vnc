@@ -3,10 +3,11 @@ package encodings
 import (
 	"bytes"
 	"image"
-	"image/jpeg"
 	"io"
 	"log"
 	"strconv"
+
+	"github.com/pixiv/go-libjpeg/jpeg"
 
 	"github.com/suutaku/go-vnc/internal/types"
 	"github.com/suutaku/go-vnc/internal/utils"
@@ -20,9 +21,10 @@ func (t *TightEncoding) Code() int32 { return 7 }
 
 // HandleBuffer handles an image sample.
 func (t *TightEncoding) HandleBuffer(w io.Writer, f *types.PixelFormat, img *image.RGBA) {
+
 	compressed := new(bytes.Buffer)
 
-	err := jpeg.Encode(compressed, img, nil)
+	err := jpeg.Encode(compressed, img, &jpeg.EncoderOptions{Quality: 80, OptimizeCoding: true, DCTMethod: jpeg.DCTFloat})
 	if err != nil {
 		log.Println("[tight-jpeg] Could not encode image frame to jpeg")
 		return
